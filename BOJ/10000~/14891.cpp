@@ -17,7 +17,7 @@ void func(int select, int rotate) {
 	}
 }
 
-int check(int w1, int w2, int rotate, int pick) {
+int check(int w1, int w2, int rotate) {
 	int c1 = standard[w1] + 2;
 	int c2 = standard[w2] + 6;
 
@@ -25,7 +25,7 @@ int check(int w1, int w2, int rotate, int pick) {
 	if (c2 > 7) c2 -= 8;
 
 	if (wheel[w1][c1] ^ wheel[w2][c2]) { // 서로 극이 다를 때
-		int select = (w1 == pick) ? w2 : w1;
+		int select = (isrotate[w1] == 0) ? w1 : w2;
 		return select;
 	}
 	else
@@ -45,7 +45,7 @@ int main(void) {
 	while (K--) {
 		fill(isrotate, isrotate + 4, 0);
 		cin >> pick >> rotate;
-		isrotate[pick] = rotate;
+		isrotate[pick - 1] = rotate;
 
 		if (pick == 1 || pick == 2) {
 			for (int i = 0; i < 3; i++) {
@@ -53,9 +53,9 @@ int main(void) {
 					break;
 				}
 				else {
-					int change = check(i, i + 1, rotate, pick - 1);
+					int change = check(i, i + 1, rotate);
 					if (change >= 0) {
-						isrotate[change] = ((pick % 2) ^ (change % 2)) ? -rotate : rotate;
+						isrotate[change] = (((pick-1) % 2) ^ (change % 2)) ? rotate * -1 : rotate;
 					}
 				}				
 			}
@@ -66,16 +66,16 @@ int main(void) {
 					break;
 				}
 				else {
-					int change = check(i - 1, i, rotate, pick - 1);
+					int change = check(i - 1, i, rotate);
 					if (change >= 0) {
-						isrotate[change] = ((pick % 2) ^ (change % 2)) ? -rotate : rotate;
+						isrotate[change] = (((pick-1) % 2) ^ (change % 2)) ? rotate * -1 : rotate;
 					}
 				}				
 			}
 		}
 
 		for (int i = 0; i < 4; i++) {
-			if (isrotate[i]) {
+			if (isrotate[i] != 0) {
 				func(i, isrotate[i]);
 			}
 		}
